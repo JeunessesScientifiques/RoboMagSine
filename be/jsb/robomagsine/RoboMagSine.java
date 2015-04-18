@@ -15,7 +15,22 @@ public class RoboMagSine {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        Usine usine = Usine.getInstance();
+        
+        try{
+            usine.ajouterTresorerie(10000);
+        }catch (PasAssezDArgentException e){
+         
+        }
+        
+        usine.setNom("Chez Lulu et Lulute :-)");
+        usine.administratifs.add(new MainDOeuvreAdministrative(6,1));
+        usine.administratifs.add(new MainDOeuvreAdministrative(6,5));
+        
+        DetailCommerceJFrame homePage = new DetailCommerceJFrame(); 
+        homePage.setVisible(true);
     }
+    
     
 }
