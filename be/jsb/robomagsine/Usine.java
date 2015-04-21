@@ -26,20 +26,6 @@ public class Usine extends Entreprise {
         return instance;
     }
 
-    public ArrayList<MainDOeuvreAdministrative> getAdministratifs() {
-        return administratifs;
-    }
-
-    public void addAdministratif(MainDOeuvreAdministrative administratif) {
-        this.administratifs.add(administratif);
-    }
     
-    public void removeAdministratif(MainDOeuvreAdministrative administratif){
-        this.administratifs.remove(administratif);
-    }
-    
-    public int getNombreAdministratifs(){
-        return this.administratifs.size();
-    }
     
 }

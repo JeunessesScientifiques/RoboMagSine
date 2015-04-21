@@ -16,6 +16,7 @@ public class RoboMagSine {
      */
     public static void main(String[] args) {
         
+        
         Usine usine = Usine.getInstance();
         
         try{

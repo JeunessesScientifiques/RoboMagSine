@@ -15,4 +15,8 @@ public class MainDOeuvreAdministrative extends MainDOeuvre {
         super(bonheur, compétences);
     }
     
+    public MainDOeuvreAdministrative(){
+        super();
+    }
+    
 }

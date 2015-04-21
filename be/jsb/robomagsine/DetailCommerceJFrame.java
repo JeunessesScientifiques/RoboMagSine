@@ -1,5 +1,9 @@
 package be.jsb.robomagsine;
 
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,11 +15,15 @@ package be.jsb.robomagsine;
  * @author laurent
  */
 public class DetailCommerceJFrame extends javax.swing.JFrame {
+    
+    private DefaultTableModel dtm;
 
     /**
      * Creates new form HomeJFrame
      */
     public DetailCommerceJFrame() {
+        dtm = DBManager.getInstance().getMachines();
+                
         initComponents();
         updateValues();
     }
@@ -31,6 +39,8 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
         this.nbrSalariéAdministratifLabel.setText(Integer.toString(usine.getNombreAdministratifs()));
         this.salaireAdminLabel.setText(Float.toString(usine.getPaieHebdomadaireAdministratif())+" €");
         this.bonheurAdminLabel.setText(Float.toString(Math.round(usine.getBonheurMoyenAdministratifs()*10))+" %");
+        this.productivitéMoyenneAdministratifsLabel.setText(Float.toString(Math.round(usine.getProductivitéMoyenneAdministratifs()*10))+" %");
+        this.maxDossierTraitableAdministratifs.setText(Float.toString(Math.round(300*usine.getProductivitéMoyenneAdministratifs()/10)));
     }
 
     /**
@@ -49,11 +59,9 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
-        jPanel8 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -62,6 +70,23 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         salaireAdminLabel = new javax.swing.JLabel();
         bonheurAdminLabel = new javax.swing.JLabel();
+        augmenterSalaireAdmin = new javax.swing.JButton();
+        diminuerSalaireAdmin = new javax.swing.JButton();
+        augmenterSalariésAdmini = new javax.swing.JButton();
+        diminuerSalariésAdministratif = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        productivitéMoyenneAdministratifsLabel = new javax.swing.JLabel();
+        maxDossierTraitableAdministratifs = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable(){
+            public boolean isCellEditable(int row, int col){
+                return false;
+            }
+        }
+        ;
+        jPanel8 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -104,19 +129,6 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Capital", jPanel3);
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 792, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 475, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Gestion de la production", jPanel4);
-
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -156,19 +168,6 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Contexte général", jPanel7);
 
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 792, Short.MAX_VALUE)
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 475, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Finances", jPanel8);
-
         jPanel2.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 jPanel2ComponentShown(evt);
@@ -191,6 +190,42 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
 
         bonheurAdminLabel.setText("xx %");
 
+        augmenterSalaireAdmin.setText("+");
+        augmenterSalaireAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                augmenterSalaireAdminActionPerformed(evt);
+            }
+        });
+
+        diminuerSalaireAdmin.setText("-");
+        diminuerSalaireAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                diminuerSalaireAdminActionPerformed(evt);
+            }
+        });
+
+        augmenterSalariésAdmini.setText("+");
+        augmenterSalariésAdmini.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                augmenterSalariésAdminiActionPerformed(evt);
+            }
+        });
+
+        diminuerSalariésAdministratif.setText("-");
+        diminuerSalariésAdministratif.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                diminuerSalariésAdministratifActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Productivitée moyenne : ");
+
+        jLabel6.setText("Nombre max de dossier traitable :");
+
+        productivitéMoyenneAdministratifsLabel.setText("xx %");
+
+        maxDossierTraitableAdministratifs.setText("xx");
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -200,32 +235,60 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nbrSalariéAdministratifLabel))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addComponent(nbrSalariéAdministratifLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(salaireAdminLabel))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addComponent(augmenterSalariésAdmini)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bonheurAdminLabel)))
-                .addGap(0, 166, Short.MAX_VALUE))
+                        .addComponent(diminuerSalariésAdministratif))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(productivitéMoyenneAdministratifsLabel)
+                            .addComponent(bonheurAdminLabel)))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(maxDossierTraitableAdministratifs)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addComponent(salaireAdminLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(augmenterSalaireAdmin)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(diminuerSalaireAdmin)))))
+                .addGap(0, 56, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nbrSalariéAdministratifLabel)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(augmenterSalariésAdmini)
+                    .addComponent(diminuerSalariésAdministratif))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(salaireAdminLabel))
+                    .addComponent(salaireAdminLabel)
+                    .addComponent(augmenterSalaireAdmin)
+                    .addComponent(diminuerSalaireAdmin))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(bonheurAdminLabel))
-                .addGap(0, 15, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(productivitéMoyenneAdministratifsLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(maxDossierTraitableAdministratifs)))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -235,17 +298,57 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap(340, Short.MAX_VALUE))
+                .addContainerGap(391, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(359, Short.MAX_VALUE))
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(305, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Ressources humaines", jPanel2);
+
+        jTable1.setAutoCreateRowSorter(true);
+        jTable1.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        jTable1.setModel(dtm);
+        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        jTable1.setColumnSelectionAllowed(true);
+        jTable1.setDragEnabled(true);
+        jScrollPane1.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(424, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(140, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Gestion de la production", jPanel4);
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 792, Short.MAX_VALUE)
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 475, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Finances", jPanel8);
 
         jMenu1.setText("Fichiers");
         jMenuBar1.add(jMenu1);
@@ -288,6 +391,30 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
         updatePersonnelValues();
     }//GEN-LAST:event_jPanel2ComponentShown
 
+    private void augmenterSalaireAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_augmenterSalaireAdminActionPerformed
+        Usine.getInstance().augmenterPaieHebdomadaireAdministratif();
+        this.updatePersonnelValues();
+        this.updateValues();
+    }//GEN-LAST:event_augmenterSalaireAdminActionPerformed
+
+    private void diminuerSalaireAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_diminuerSalaireAdminActionPerformed
+        Usine.getInstance().diminuerPaieHebdomadaireAdministratif();
+        this.updatePersonnelValues();
+        this.updateValues();
+    }//GEN-LAST:event_diminuerSalaireAdminActionPerformed
+
+    private void augmenterSalariésAdminiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_augmenterSalariésAdminiActionPerformed
+        Usine.getInstance().augmenterPersonnelAdministratif();
+        this.updatePersonnelValues();
+        this.updateValues();
+    }//GEN-LAST:event_augmenterSalariésAdminiActionPerformed
+
+    private void diminuerSalariésAdministratifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_diminuerSalariésAdministratifActionPerformed
+        Usine.getInstance().diminuerSalariésAdministratif();
+        this.updatePersonnelValues();
+        this.updateValues();
+    }//GEN-LAST:event_diminuerSalariésAdministratifActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -315,7 +442,7 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
+// TODO add your handling code here:
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -325,11 +452,17 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton augmenterSalaireAdmin;
+    private javax.swing.JButton augmenterSalariésAdmini;
     private javax.swing.JLabel bonheurAdminLabel;
+    private javax.swing.JButton diminuerSalaireAdmin;
+    private javax.swing.JButton diminuerSalariésAdministratif;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -343,9 +476,13 @@ public class DetailCommerceJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel maxDossierTraitableAdministratifs;
     private javax.swing.JLabel nbrSalariéAdministratifLabel;
     private javax.swing.JLabel nomEntrepriseLabel;
+    private javax.swing.JLabel productivitéMoyenneAdministratifsLabel;
     private javax.swing.JLabel salaireAdminLabel;
     private javax.swing.JLabel soldeLabel;
     // End of variables declaration//GEN-END:variables

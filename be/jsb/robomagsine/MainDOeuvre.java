@@ -9,8 +9,9 @@ package be.jsb.robomagsine;
  *
  * @author laurent
  */
-abstract class MainDOeuvre implements Temporalisable {
-    
+abstract class MainDOeuvre implements Temporalisable, Comparable {
+
+       
     /* Indicateurs */
     protected float bonheur; //note entre 0 et 10
     protected float compétences; //notre entre 0 et 10
@@ -18,6 +19,11 @@ abstract class MainDOeuvre implements Temporalisable {
     public MainDOeuvre(float bonheur, float compétences) {
         this.bonheur = bonheur;
         this.compétences = compétences;
+    }
+    
+    public MainDOeuvre(){
+        this.bonheur = 6;
+        this.compétences = (float) Math.random()*10;
     }
         
     /**
@@ -49,6 +55,17 @@ abstract class MainDOeuvre implements Temporalisable {
 
     public void setCompétences(float compétences) {
         this.compétences = compétences;
+    }
+
+    @Override
+    public int compareTo(Object t) {
+        float competenceT = ((MainDOeuvre) t).getCompétences();
+        float competenceThis = this.getCompétences();
+        
+        if(competenceT<competenceThis) return -1;
+        else if(competenceT==competenceThis) return 0;
+        else return 1;
+        
     }
     
 }
