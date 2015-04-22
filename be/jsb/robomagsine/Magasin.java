@@ -10,5 +10,15 @@ package be.jsb.robomagsine;
  * @author laurent
  */
 public class Magasin extends Entreprise {
+
+    @Override
+    String getNomPourProduction() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    String getNomPourService() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

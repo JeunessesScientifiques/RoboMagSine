@@ -23,7 +23,7 @@ abstract class MainDOeuvre implements Temporalisable, Comparable {
     
     public MainDOeuvre(){
         this.bonheur = 6;
-        this.compétences = (float) Math.random()*10;
+        this.compétences = (float) Math.random()*4;
     }
         
     /**

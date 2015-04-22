@@ -25,6 +25,12 @@ abstract class Entreprise implements Temporalisable {
     protected ArrayList<MainDOeuvreAdministrative> administratifs = new ArrayList();
     protected float paieHebdomadaireAdministratif = 1350;
 
+    protected ArrayList<MainDOeuvreProduction> productions = new ArrayList();
+    protected float paieHebdomadaireProduction = 1000;
+
+    protected ArrayList<MainDOeuvreService> services = new ArrayList();
+    protected float paieHebdomadaireService = 1600;
+
     /* Gestion du capital */
     protected float tresorerie = 0;
 
@@ -41,6 +47,10 @@ abstract class Entreprise implements Temporalisable {
     /* Variables propres au jeu */
     protected int proprietaire;
     protected String nom;
+
+    abstract String getNomPourProduction();
+
+    abstract String getNomPourService();
 
     public void passageALaProchainePeriode() {
 
@@ -69,6 +79,14 @@ abstract class Entreprise implements Temporalisable {
         return this.getBonheurMoyen(this.administratifs);
     }
 
+    public float getBonheurMoyenServices() {
+        return this.getBonheurMoyen(this.services);
+    }
+
+    public float getBonheurMoyenProductions() {
+        return this.getBonheurMoyen(this.productions);
+    }
+
     private <T extends MainDOeuvre> float getBonheurMoyen(ArrayList<T> tab) {
         Iterator<T> it = tab.iterator();
 
@@ -80,11 +98,19 @@ abstract class Entreprise implements Temporalisable {
 
         return Math.min(bonheur / (tab.size()), 10);
     }
-    
-    public float getProductivitéMoyenneAdministratifs(){
+
+    public float getProductivitéMoyenneAdministratifs() {
         return this.getProductivitéMoyenne(this.administratifs);
     }
-    
+
+    public float getProductivitéMoyenneProductions() {
+        return this.getProductivitéMoyenne(this.productions);
+    }
+
+    public float getProductivitéMoyenneServices() {
+        return this.getProductivitéMoyenne(this.services);
+    }
+
     private <T extends MainDOeuvre> float getProductivitéMoyenne(ArrayList<T> tab) {
         Iterator<T> it = tab.iterator();
 
@@ -132,31 +158,46 @@ abstract class Entreprise implements Temporalisable {
         return paieHebdomadaireAdministratif;
     }
 
-    public void setPaieHebdomadaireAdministratif(float paieHebdomadaireAdministratif) {
-        this.paieHebdomadaireAdministratif = paieHebdomadaireAdministratif;
+    public float getPaieHebdomadaireProduction() {
+        return paieHebdomadaireProduction;
     }
 
-    public void augmenterPaieHebdomadaireAdministratif() {
-        this.paieHebdomadaireAdministratif = this.deltaSalaire(this.paieHebdomadaireAdministratif, this.getNombreAdministratifs(), 1);
+    public float getPaieHebdomadaireService() {
+        return paieHebdomadaireService;
     }
 
-    public void diminuerPaieHebdomadaireAdministratif() {
-        this.paieHebdomadaireAdministratif = this.deltaSalaire(this.paieHebdomadaireAdministratif, this.getNombreAdministratifs(), -1);
+    public void augmenterPaieSalariésAdministratifs() {
+        this.paieHebdomadaireAdministratif = this.deltaSalaire(this.paieHebdomadaireAdministratif, 1);
     }
 
-    private float deltaSalaire(float variableSalaire, int nbrSalariés, int signe) {
+    public void augmenterPaieSalariésServices() {
+        this.paieHebdomadaireService = this.deltaSalaire(this.paieHebdomadaireService, 1);
+    }
+
+    public void augmenterPaieSalariésProductions() {
+        this.paieHebdomadaireProduction = this.deltaSalaire(this.paieHebdomadaireProduction, 1);
+    }
+
+    public void diminuerPaieSalariésAdministratifs() {
+        this.paieHebdomadaireAdministratif = this.deltaSalaire(this.paieHebdomadaireAdministratif, -1);
+    }
+
+    public void diminuerPaieSalariésServices() {
+        this.paieHebdomadaireService = this.deltaSalaire(this.paieHebdomadaireService, -1);
+    }
+
+    public void diminuerPaieSalariésProductions() {
+        this.paieHebdomadaireProduction = this.deltaSalaire(this.paieHebdomadaireProduction, -1);
+    }
+
+    private float deltaSalaire(float variableSalaire, int signe) {
         float deltaSalaire = this.augmentationSalaire;
 
         if (signe < 0) {
             deltaSalaire *= -1;
         }
         if (variableSalaire + deltaSalaire >= this.salaireMinimun) {
-            try {
-                this.retirerTresorerie(nbrSalariés * deltaSalaire);
-                variableSalaire += deltaSalaire;
-            } catch (PasAssezDArgentException e) {
-                System.out.print(e.getMessage());
-            }
+            variableSalaire += deltaSalaire;
         }
 
         return variableSalaire;
@@ -166,41 +207,66 @@ abstract class Entreprise implements Temporalisable {
         return administratifs;
     }
 
-    public void addAdministratif(MainDOeuvreAdministrative administratif) {
-        this.administratifs.add(administratif);
+    public ArrayList<MainDOeuvreProduction> getProductions() {
+        return productions;
     }
 
-    public void removeAdministratif(MainDOeuvreAdministrative administratif) {
-        this.administratifs.remove(administratif);
+    public ArrayList<MainDOeuvreService> getServices() {
+        return services;
     }
 
     public int getNombreAdministratifs() {
         return this.administratifs.size();
     }
 
-    public void augmenterPersonnelAdministratif() {
-        this.administratifs = this.augmenterSalariés(this.administratifs, this.paieHebdomadaireAdministratif);
+    public int getNombreServices() {
+        return this.services.size();
     }
-    
-    public void diminuerSalariésAdministratif(){
+
+    public int getNombreProductions() {
+        return this.productions.size();
+    }
+
+    public void augmenterPersonnelAdministratif() {
+        this.administratifs = this.augmenterSalariés(this.administratifs);
+    }
+
+    public void diminuerSalariésAdministratif() {
         this.administratifs = this.diminuerSalariées(this.administratifs);
     }
 
-    private <T extends MainDOeuvre> ArrayList<T> augmenterSalariés(ArrayList<T> tab, float salaire) {
+    public void augmenterPersonnelProduction() {
+        this.productions = this.augmenterSalariés(this.productions);
+    }
+
+    public void diminuerSalariésProduction() {
+        this.productions = this.diminuerSalariées(this.productions);
+    }
+
+    public void diminuerSalariésService() {
+        this.services = this.diminuerSalariées(this.services);
+    }
+
+    public void augmenterPersonnelService() {
+        this.services = this.augmenterSalariés(this.services);
+    }
+
+    private <T extends MainDOeuvre> ArrayList<T> augmenterSalariés(ArrayList<T> tab) {
         try {
-            this.retirerTresorerie(salaire);
             T test = (T) tab.get(0).getClass().newInstance();
             tab.add(test);
-        } catch (InstantiationException | IllegalAccessException | PasAssezDArgentException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(Entreprise.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return tab;
     }
-    
-    private <T extends MainDOeuvre> ArrayList<T> diminuerSalariées(ArrayList<T> tab){
-        Collections.sort(tab);
-        tab.remove(tab.size()-1);
+
+    private <T extends MainDOeuvre> ArrayList<T> diminuerSalariées(ArrayList<T> tab) {
+        if (tab.size() > 1) {
+            Collections.sort(tab);
+            tab.remove(tab.size() - 1);
+        }
         return tab;
     }
 

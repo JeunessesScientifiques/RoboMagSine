@@ -26,6 +26,16 @@ public class Usine extends Entreprise {
         return instance;
     }
 
+    @Override
+    String getNomPourProduction() {
+        return "technique";
+    }
+
+    @Override
+    String getNomPourService() {
+        return "recherche et développement";
+    }
+
     
     
 }

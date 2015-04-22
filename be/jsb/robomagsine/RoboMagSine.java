@@ -27,7 +27,11 @@ public class RoboMagSine {
         
         usine.setNom("Chez Lulu et Lulute :-)");
         usine.administratifs.add(new MainDOeuvreAdministrative(6,1));
-        usine.administratifs.add(new MainDOeuvreAdministrative(6,5));
+        usine.administratifs.add(new MainDOeuvreAdministrative(6,5)); 
+        
+        usine.productions.add(new MainDOeuvreProduction());
+        
+        usine.services.add(new MainDOeuvreService());
         
         DetailCommerceJFrame homePage = new DetailCommerceJFrame(); 
         homePage.setVisible(true);
